@@ -1,7 +1,6 @@
 package waterdata
 
-type GetGageErrorResponse struct{}
-type GetGageResponse struct {
+type GetInstantaneousValuesResponse struct {
 	Name            string `json:"name"`
 	DeclaredType    string `json:"declaredType"`
 	Scope           string `json:"scope"`

@@ -51,7 +51,7 @@ func main() {
 		logger.Error("Expected flag `--endpoint`")
 		os.Exit(1)
 	}
-	if len(sites)==0 {
+	if len(sites) == 0 {
 		logger.Error("Expected at least one flag `--site`")
 		os.Exit(1)
 	}
@@ -80,7 +80,7 @@ func main() {
 		StartTime: StartTime,
 	}
 	registry.MustRegister(collector.NewExporterCollector(s, b, logger))
-	registry.MustRegister(collector.NewGageCollector(s, client, sites, logger))
+	registry.MustRegister(collector.NewInstantaneousValuesCollector(s, client, sites, logger))
 
 	mux := http.NewServeMux()
 	mux.Handle("/", http.HandlerFunc(handleRoot))

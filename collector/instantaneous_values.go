@@ -9,9 +9,9 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 )
 
-// GageCollector represents the result of USGS Waterdata Gage measurements
+// InstantaneousValuesCollector represents the result of USGS Instantaneous Values service
 // Currently this only extracts one measurement GageHeightFeet ("00065")
-type GageCollector struct {
+type InstantaneousValuesCollector struct {
 	System System
 	Client *waterdata.Client
 	Logger *slog.Logger
@@ -21,10 +21,10 @@ type GageCollector struct {
 	GageHeightFeet *prometheus.Desc
 }
 
-// NewGageCollector is a function that creates a new GageCollector
-func NewGageCollector(s System, c *waterdata.Client, sites []string, l *slog.Logger) *GageCollector {
+// NewInstantaneousValuesCollector is a function that creates a new GageCollector
+func NewInstantaneousValuesCollector(s System, c *waterdata.Client, sites []string, l *slog.Logger) *InstantaneousValuesCollector {
 	subsystem := "gage"
-	return &GageCollector{
+	return &InstantaneousValuesCollector{
 		System: s,
 		Client: c,
 		Logger: l,
@@ -43,8 +43,8 @@ func NewGageCollector(s System, c *waterdata.Client, sites []string, l *slog.Log
 }
 
 // Collect is a method that implements Prometheus' Collector interface and collects metrics
-func (c *GageCollector) Collect(ch chan<- prometheus.Metric) {
-	resp, err := c.Client.GetGage(c.Sites)
+func (c *InstantaneousValuesCollector) Collect(ch chan<- prometheus.Metric) {
+	resp, err := c.Client.GetInstantaneousValues(c.Sites)
 	if err != nil {
 		slog.Info("unable to get waterdata gage")
 		return
@@ -92,6 +92,6 @@ func (c *GageCollector) Collect(ch chan<- prometheus.Metric) {
 }
 
 // Describe is a method that implements Prometheus' Collector interface and describes metrics
-func (c *GageCollector) Describe(ch chan<- *prometheus.Desc) {
+func (c *InstantaneousValuesCollector) Describe(ch chan<- *prometheus.Desc) {
 	ch <- c.GageHeightFeet
 }

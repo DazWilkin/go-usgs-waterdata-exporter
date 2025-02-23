@@ -6,9 +6,9 @@ import (
 	"testing"
 )
 
-// TestGetGauge tests whether GetGage returns a value
+// TestInstantaneousValues tests whether the service returns a value
 // TODO Improve the test to check the value that's returned
-func TestGetGauge(t *testing.T) {
+func TestInstantaneousValues(t *testing.T) {
 	logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
 
 	client := NewClient(logger)
@@ -17,7 +17,7 @@ func TestGetGauge(t *testing.T) {
 		SnoqualmieCarnation,
 		SnoqualmieDuvall,
 	}
-	resp, err := client.GetGage(sites)
+	resp, err := client.GetInstantaneousValues(sites)
 	if err != nil {
 		t.Errorf("expected success")
 	}

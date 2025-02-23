@@ -11,6 +11,7 @@ import (
 )
 
 const (
+	// iv = Instantaneous Values service
 	endpoint string = "https://waterservices.usgs.gov/nwis/iv/"
 )
 const (
@@ -37,14 +38,14 @@ func NewClient(l *slog.Logger) *Client {
 	}
 }
 
-// GetGage is a method that returns values using the Instantaneous Values Service
+// GetInstantaneousValues is a method that returns values using the InstantaneousValues Service
 // https://waterservices.usgs.gov/nwis/iv/?format=json&sites=12150400&modifiedSince=PT1H&siteStatus=all
 // Constants applied to HTTP requests
 // format=json
 // sites=site1,site2,...
 // modifiedSince=PT1H (ISO 8601 Duration: See https://en.wikipedia.org/wiki/ISO_8601#Durations)
 // siteStatus=all
-func (c *Client) GetGage(sites []string) (*GetGageResponse, error) {
+func (c *Client) GetInstantaneousValues(sites []string) (*GetInstantaneousValuesResponse, error) {
 	params := url.Values{}
 	params.Add("format", "json")
 	params.Add("sites", strings.Join(sites, ","))
@@ -59,7 +60,7 @@ func (c *Client) GetGage(sites []string) (*GetGageResponse, error) {
 		slog.Error(msg,
 			"err", err,
 		)
-		return &GetGageResponse{}, errors.New(msg)
+		return &GetInstantaneousValuesResponse{}, errors.New(msg)
 	}
 
 	parsedURL.RawQuery = queryString
@@ -71,7 +72,7 @@ func (c *Client) GetGage(sites []string) (*GetGageResponse, error) {
 		slog.Error(msg,
 			"err", err,
 		)
-		return &GetGageResponse{}, errors.New(msg)
+		return &GetInstantaneousValuesResponse{}, errors.New(msg)
 	}
 
 	resp, err := c.Client.Do(rqst)
@@ -80,7 +81,7 @@ func (c *Client) GetGage(sites []string) (*GetGageResponse, error) {
 		slog.Error(msg,
 			"err", err,
 		)
-		return &GetGageResponse{}, errors.New(msg)
+		return &GetInstantaneousValuesResponse{}, errors.New(msg)
 	}
 	defer resp.Body.Close()
 
@@ -90,29 +91,20 @@ func (c *Client) GetGage(sites []string) (*GetGageResponse, error) {
 		slog.Error(msg,
 			"err", err,
 		)
-		return &GetGageResponse{}, errors.New(msg)
+		return &GetInstantaneousValuesResponse{}, errors.New(msg)
 	}
 
 	if resp.StatusCode != http.StatusOK {
-		respErr := &GetGageErrorResponse{}
-		if err := json.Unmarshal(respBody, respErr); err != nil {
-			msg := "unable to unmarshal error response body"
-			slog.Error(msg,
-				"err", err,
-			)
-			return &GetGageResponse{}, errors.New(msg)
-		}
-
-		// slog.Info("Request: %s\nStatus: %+v", respErr.Request, respErr.Errors)
+		return &GetInstantaneousValuesResponse{}, errors.New(resp.Status)
 	}
 
-	respMsg := &GetGageResponse{}
+	respMsg := &GetInstantaneousValuesResponse{}
 	if err := json.Unmarshal(respBody, respMsg); err != nil {
 		msg := "unable to unmarshal response body"
 		slog.Error(msg,
 			"err", err,
 		)
-		return &GetGageResponse{}, errors.New(msg)
+		return &GetInstantaneousValuesResponse{}, errors.New(msg)
 	}
 
 	return respMsg, nil
