@@ -48,6 +48,7 @@ type TimeSeries struct {
 type TimeSeries_Value struct {
 	Value []TimeSeries_Value_Value `json:"value"`
 }
+
 type TimeSeries_Value_Value struct {
 	Value      string   `json:"value"`
 	Qualifiers []string `json:"qualifiers"`
@@ -58,10 +59,21 @@ type Value struct {
 	QueryInfo  QueryInfo    `json:"queryInfo"`
 	TimeSeries []TimeSeries `json:"timeSeries"`
 }
+
 type Variable struct {
 	VariableCode []VariableCode `json:"variableCode"`
 	VariableName string         `json:"variableName"`
 	// TODO Incomplete
+}
+
+func (x *Variable) Contains(value string) bool {
+	for _, v := range x.VariableCode {
+		if v.Value == value {
+			return true
+		}
+	}
+
+	return false
 }
 
 type VariableCode struct {
