@@ -1,0 +1,14 @@
+global:
+  scrape_interval: 1m
+  evaluation_interval: 1m
+
+#rule_files:
+#- "/etc/alertmanager/rules.yml"
+
+scrape_configs:
+
+  # USGS Waterdata Exporter
+  - job_name: "usgs-waterdata-exporter"
+    static_configs:
+    - targets:
+      - "localhost:8080"

@@ -1,0 +1,5 @@
+# VS Code
+.vscode/**
+
+# cosign key
+cosign.key
