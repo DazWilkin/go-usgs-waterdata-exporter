@@ -17,6 +17,18 @@
 + [Documentation](https://waterservices.usgs.gov/docs/instantaneous-values/instantaneous-values-details/)
 + [Snoqualmie: Duvall 2 hours](https://waterservices.usgs.gov/nwis/iv/?format=json&sites=12150400&modifiedSince=PT2H&siteStatus=all)
 
+## Run
+
+```bash
+MODULE="github.com/DazWilkin/go-usgs-waterdata-exporter" # Or "."
+
+# Sites: Snoqualmie River at Carnation, Duvall, Monroe
+go run ${MODULE}/cmd/server \
+--site=12149000 \
+--site=12150400 \
+--site=12150800
+```
+
 ## Prometheus
 
 ```bash
