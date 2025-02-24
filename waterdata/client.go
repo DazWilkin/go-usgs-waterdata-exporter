@@ -107,7 +107,7 @@ func (c *Client) GetInstantaneousValues(sites []string) (*GetInstantaneousValues
 		return &GetInstantaneousValuesResponse{}, errors.New(resp.Status)
 	}
 
-	logger.Info("unmarshaling response body")
+	logger.Info("Unmarshaling response body")
 	respMsg := &GetInstantaneousValuesResponse{}
 	if err := json.Unmarshal(respBody, respMsg); err != nil {
 		msg := "unable to unmarshal response body"
@@ -117,7 +117,7 @@ func (c *Client) GetInstantaneousValues(sites []string) (*GetInstantaneousValues
 		return &GetInstantaneousValuesResponse{}, errors.New(msg)
 	}
 
-	logger.Info("returning response",
+	logger.Info("Returning response",
 		"timeseries", len(respMsg.Value.TimeSeries),
 	)
 	return respMsg, nil

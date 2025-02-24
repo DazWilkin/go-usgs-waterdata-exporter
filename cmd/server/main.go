@@ -48,11 +48,11 @@ func main() {
 	flag.Parse()
 
 	if *endpoint == "" {
-		logger.Error("Expected flag `--endpoint`")
+		logger.Error("expected flag `--endpoint`")
 		os.Exit(1)
 	}
 	if len(sites) == 0 {
-		logger.Error("Expected at least one flag `--site`")
+		logger.Error("expected at least one flag `--site`")
 		os.Exit(1)
 	}
 

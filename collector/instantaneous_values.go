@@ -33,7 +33,7 @@ func NewInstantaneousValuesCollector(s System, c *waterdata.Client, sites []stri
 		Sites: sites,
 
 		GageHeightFeet: prometheus.NewDesc(
-			prometheus.BuildFQName(s.Namespace, subsystem, "height_feet"),
+			prometheus.BuildFQName(s.Namespace, subsystem, "gage_height_feet"),
 			"Gage Height Feet",
 			[]string{
 				"site",
@@ -48,7 +48,7 @@ func (c *InstantaneousValuesCollector) Collect(ch chan<- prometheus.Metric) {
 	logger := c.Logger.With("method", "collect")
 	resp, err := c.Client.GetInstantaneousValues(c.Sites)
 	if err != nil {
-		logger.Info("unable to get waterdata gage")
+		logger.Info("Unable to get waterdata gage")
 		return
 	}
 
@@ -56,12 +56,15 @@ func (c *InstantaneousValuesCollector) Collect(ch chan<- prometheus.Metric) {
 	// Must filter results to ensure the VariableCode[].Value only contains GageHeightFeet ("00065")
 	// TODO extend this filter if other Prometheus Metrics are added
 	for _, t := range resp.Value.TimeSeries {
-		logger.Info("iterating over results",
+		logger.Info("Iterating over results",
 			"name", t.Name,
 		)
 
 		// Filter TimeSeries to only those where VariableCode[].Value contains GageHeightFeet
 		if !t.Variable.Contains(waterdata.GageHeightFeet) {
+			logger.Info("Excluded",
+				"name", t.Name,
+			)
 			continue
 		}
 
@@ -73,7 +76,7 @@ func (c *InstantaneousValuesCollector) Collect(ch chan<- prometheus.Metric) {
 			func(v string) float64 {
 				r, err := strconv.ParseFloat(v, 64)
 				if err != nil {
-					logger.Info("unable to parse value as float64",
+					logger.Info("Unable to parse value as float64",
 						"value", v,
 					)
 					return 0.0
