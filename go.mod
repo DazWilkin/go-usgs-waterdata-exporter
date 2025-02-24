@@ -1,4 +1,4 @@
-module github.com/DazWilkin/go-usgs-waterdata
+module github.com/DazWilkin/go-usgs-waterdata-exporter
 
 go 1.23.4
 
