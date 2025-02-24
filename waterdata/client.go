@@ -32,9 +32,11 @@ type Client struct {
 
 // NewClient is a function that returns a new Client
 func NewClient(l *slog.Logger) *Client {
+	logger := l.With("client", "waterdata")
+
 	return &Client{
 		Client: &http.Client{},
-		Logger: l,
+		Logger: logger,
 	}
 }
 
@@ -46,6 +48,11 @@ func NewClient(l *slog.Logger) *Client {
 // modifiedSince=PT1H (ISO 8601 Duration: See https://en.wikipedia.org/wiki/ISO_8601#Durations)
 // siteStatus=all
 func (c *Client) GetInstantaneousValues(sites []string) (*GetInstantaneousValuesResponse, error) {
+	logger := c.Logger
+	logger.Info("Get",
+		"sites", sites,
+	)
+
 	params := url.Values{}
 	params.Add("format", "json")
 	params.Add("sites", strings.Join(sites, ","))
@@ -57,7 +64,7 @@ func (c *Client) GetInstantaneousValues(sites []string) (*GetInstantaneousValues
 	parsedURL, err := url.Parse(endpoint)
 	if err != nil {
 		msg := "unable to parse URL"
-		slog.Error(msg,
+		logger.Error(msg,
 			"err", err,
 		)
 		return &GetInstantaneousValuesResponse{}, errors.New(msg)
@@ -69,16 +76,17 @@ func (c *Client) GetInstantaneousValues(sites []string) (*GetInstantaneousValues
 	rqst, err := http.NewRequest(http.MethodGet, fullURL, nil)
 	if err != nil {
 		msg := "unable to create request"
-		slog.Error(msg,
+		logger.Error(msg,
 			"err", err,
 		)
 		return &GetInstantaneousValuesResponse{}, errors.New(msg)
 	}
 
+	logger.Info("Invoking method")
 	resp, err := c.Client.Do(rqst)
 	if err != nil {
 		msg := "unable to make request"
-		slog.Error(msg,
+		logger.Error(msg,
 			"err", err,
 		)
 		return &GetInstantaneousValuesResponse{}, errors.New(msg)
@@ -88,24 +96,29 @@ func (c *Client) GetInstantaneousValues(sites []string) (*GetInstantaneousValues
 	respBody, err := io.ReadAll(resp.Body)
 	if err != nil {
 		msg := "unable to read response body"
-		slog.Error(msg,
+		logger.Error(msg,
 			"err", err,
 		)
 		return &GetInstantaneousValuesResponse{}, errors.New(msg)
 	}
 
 	if resp.StatusCode != http.StatusOK {
+		logger.Error("non-200 response")
 		return &GetInstantaneousValuesResponse{}, errors.New(resp.Status)
 	}
 
+	logger.Info("unmarshaling response body")
 	respMsg := &GetInstantaneousValuesResponse{}
 	if err := json.Unmarshal(respBody, respMsg); err != nil {
 		msg := "unable to unmarshal response body"
-		slog.Error(msg,
+		logger.Error(msg,
 			"err", err,
 		)
 		return &GetInstantaneousValuesResponse{}, errors.New(msg)
 	}
 
+	logger.Info("returning response",
+		"timeseries", len(respMsg.Value.TimeSeries),
+	)
 	return respMsg, nil
 }

@@ -23,11 +23,12 @@ type InstantaneousValuesCollector struct {
 
 // NewInstantaneousValuesCollector is a function that creates a new GageCollector
 func NewInstantaneousValuesCollector(s System, c *waterdata.Client, sites []string, l *slog.Logger) *InstantaneousValuesCollector {
-	subsystem := "gage"
+	subsystem := "iv"
+	logger := l.With("collector", subsystem)
 	return &InstantaneousValuesCollector{
 		System: s,
 		Client: c,
-		Logger: l,
+		Logger: logger,
 
 		Sites: sites,
 
@@ -44,9 +45,10 @@ func NewInstantaneousValuesCollector(s System, c *waterdata.Client, sites []stri
 
 // Collect is a method that implements Prometheus' Collector interface and collects metrics
 func (c *InstantaneousValuesCollector) Collect(ch chan<- prometheus.Metric) {
+	logger := c.Logger.With("method", "collect")
 	resp, err := c.Client.GetInstantaneousValues(c.Sites)
 	if err != nil {
-		slog.Info("unable to get waterdata gage")
+		logger.Info("unable to get waterdata gage")
 		return
 	}
 
@@ -54,16 +56,12 @@ func (c *InstantaneousValuesCollector) Collect(ch chan<- prometheus.Metric) {
 	// Must filter results to ensure the VariableCode[].Value only contains GageHeightFeet ("00065")
 	// TODO extend this filter if other Prometheus Metrics are added
 	for _, t := range resp.Value.TimeSeries {
-		// Filter TimeSeries to only those where VariableCode[].Value contains GageHeightFeet
-		if !func(vv []waterdata.VariableCode, s string) bool {
-			for _, v := range vv {
-				if v.Value == s {
-					return true
-				}
-			}
+		logger.Info("iterating over results",
+			"name", t.Name,
+		)
 
-			return false
-		}(t.Variable.VariableCode, waterdata.GageHeightFeet) {
+		// Filter TimeSeries to only those where VariableCode[].Value contains GageHeightFeet
+		if !t.Variable.Contains(waterdata.GageHeightFeet) {
 			continue
 		}
 
@@ -75,7 +73,7 @@ func (c *InstantaneousValuesCollector) Collect(ch chan<- prometheus.Metric) {
 			func(v string) float64 {
 				r, err := strconv.ParseFloat(v, 64)
 				if err != nil {
-					slog.Info("unable to parse value as float64",
+					logger.Info("unable to parse value as float64",
 						"value", v,
 					)
 					return 0.0

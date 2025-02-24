@@ -26,10 +26,11 @@ type Build struct {
 
 // NewExporterCollector returns a new ExporterCollector.
 func NewExporterCollector(s System, b Build, l *slog.Logger) *ExporterCollector {
+	logger := l.With("collector", "exporter")
 	return &ExporterCollector{
 		System: s,
 		Build:  b,
-		Logger: l,
+		Logger: logger,
 		StartTime: prometheus.NewDesc(
 			prometheus.BuildFQName(s.Namespace, s.Subsystem, "start_time"),
 			"Exporter start time in Unix epoch seconds",
