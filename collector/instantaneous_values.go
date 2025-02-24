@@ -4,7 +4,7 @@ import (
 	"log/slog"
 	"strconv"
 
-	"github.com/DazWilkin/go-usgs-waterdata/waterdata"
+	"github.com/DazWilkin/go-usgs-waterdata-exporter/waterdata"
 
 	"github.com/prometheus/client_golang/prometheus"
 )

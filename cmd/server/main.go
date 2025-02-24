@@ -8,8 +8,8 @@ import (
 	"runtime"
 	"time"
 
-	"github.com/DazWilkin/go-usgs-waterdata/collector"
-	"github.com/DazWilkin/go-usgs-waterdata/waterdata"
+	"github.com/DazWilkin/go-usgs-waterdata-exporter/collector"
+	"github.com/DazWilkin/go-usgs-waterdata-exporter/waterdata"
 
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
