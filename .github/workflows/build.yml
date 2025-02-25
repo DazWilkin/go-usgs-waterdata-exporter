@@ -58,19 +58,19 @@ jobs:
           ghcr.io/${{ env.REPO}}@${DIGEST}
         env:
           COSIGN_PASSWORD: ""
-    #   - name: Revise occurrences of the image
-    #     run: |-
-    #       git config --local user.email "action@github.com"
-    #       git config --local user.name "GitHub Actions"
+      - name: Revise occurrences of the image
+        run: |-
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Actions"
 
-    #       for FILENAME in "./README.md"
-    #       do
-    #         echo "Replacing: ${REPO}"
-    #         sed \
-    #         --in-place \
-    #         "s|${{ env.REPO }}:[0-9a-f]\{40\}|${{ env.REPO }}:${{ github.sha }}|g" \
-    #         ${FILENAME}
-    #         git add ${FILENAME}
-    #       done
-    #       git commit --message "GitHub Actions update image references"
-    #       git push origin master
+          for FILENAME in "./README.md"
+          do
+            echo "Replacing: ${REPO}"
+            sed \
+            --in-place \
+            "s|${{ env.REPO }}:[0-9a-f]\{40\}|${{ env.REPO }}:${{ github.sha }}|g" \
+            ${FILENAME}
+            git add ${FILENAME}
+          done
+          git commit --message "GitHub Actions update image references"
+          git push origin master

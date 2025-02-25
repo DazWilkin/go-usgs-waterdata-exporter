@@ -26,7 +26,7 @@ type Build struct {
 
 // NewExporterCollector returns a new ExporterCollector.
 func NewExporterCollector(s System, b Build, l *slog.Logger) *ExporterCollector {
-	logger := l.With("collector", "exporter")
+	logger := l.With("collector", s.Subsystem)
 	return &ExporterCollector{
 		System: s,
 		Build:  b,

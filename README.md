@@ -1,10 +1,14 @@
 # Prometheus Exporter for USGS Waterdata
 
+[![build](https://github.com/DazWilkin/go-usgs-waterdata-exporter/actions/workflows/build.yml/badge.svg)](https://github.com/DazWilkin/go-usgs-waterdata-exporter/actions/workflows/build.yml)
+
 ## Table of Contents
 
 + [References](#references)
++ [Image](#image)
++ [Metrics](#metrics)
 + [Prometheus](#prometheus)
-+ [Podman](#podman)
++ [Sigstore](#sigstore)
 + [`go tools`](#go-tools)
 
 ## References
@@ -17,13 +21,45 @@
 + [Documentation](https://waterservices.usgs.gov/docs/instantaneous-values/instantaneous-values-details/)
 + [Snoqualmie: Duvall 2 hours](https://waterservices.usgs.gov/nwis/iv/?format=json&sites=12150400&modifiedSince=PT2H&siteStatus=all)
 
+## Image
+
+`ghcr.io/dazwilkin/go-usgs-waterdata-exporter:7be8641c516f53e4d5479681646cc4355cac945f`
+
+## Metrics
+
+Metrics are prefixed `usgs_waterdata_`
+
+|Name|Type|Description|
+|----|----|-----------|
+|`exporter_build_info`|Counter|A metric with a constant '1' value labeled by OS version, Go version, and the Git commit of the exporter|
+|`exporter_start_time`|Gauge|Exporter start time in Unix epoch seconds|
+|`iv_gage_height_feet`|Gauge|Gage Height Feet|
+
+> **NOTE** The USGS uses the spelling "Gage" instead of "Gauge"
+
 ## Run
+
+### Go binary
 
 ```bash
 MODULE="github.com/DazWilkin/go-usgs-waterdata-exporter" # Or "."
 
 # Sites: Snoqualmie River at Carnation, Duvall, Monroe
 go run ${MODULE}/cmd/server \
+--site=12149000 \
+--site=12150400 \
+--site=12150800
+```
+
+### Container
+
+```bash
+IMAGE="ghcr.io/dazwilkin/go-usgs-waterdata-exporter:7be8641c516f53e4d5479681646cc4355cac945f"
+
+podman run \
+--interactive --tty --rm \
+--publish=${PORT}:${PORT} \
+${IMAGE} \
 --site=12149000 \
 --site=12150400 \
 --site=12150800
@@ -44,36 +80,14 @@ docker.io/prom/prometheus:${VERS} \
 --web.enable-lifecycle
 ```
 
-## Podman
+## Sigstore
 
-Can't local build with podman because [`Dockerfile`](./Dockerfile) uses `--platform=${TARGETARCH}` for multi-platform builds.
+`go-usgs-waterdata-service` container images are being signed by [Sigstore](https://www.sigstore.dev/) and may be verified:
 
 ```bash
-podman build \
---tag=go-usgs-waterdata-exporter \
---file=./Dockerfile \
---build-arg=COMMIT=${COMMIT} \
---build-arg=VERSION="v0.0.1" \
---build-arg=TARGETOS=linux \
---build-arg=TARGETARCH=amd64 \
-${PWD}
-```
-```
-[1/2] STEP 1/13: FROM docker.io/golang:1.24.0 AS build
-Error: unable to parse platform "amd64": invalid platform syntax for "amd64" (use OS/ARCH[/VARIANT][,...])
-```
-```bash
-podman build \
---platform=linux/amd64 \
---tag=go-usgs-waterdata-exporter \
---file=./Dockerfile \
---build-arg=COMMIT=${COMMIT} \
---build-arg=VERSION="v0.0.1" \
-${PWD}
-```
-```
-[1/2] STEP 1/13: FROM docker.io/golang:1.24.0 AS build
-Error: unable to parse platform "amd64": invalid platform syntax for "amd64" (use OS/ARCH[/VARIANT][,...])
+cosign verify \
+--key=${PWD}/cosign.pub \
+ghcr.io/dazwilkin/go-usgs-waterdata-exporter:7be8641c516f53e4d5479681646cc4355cac945f
 ```
 
 ## `go tools`
