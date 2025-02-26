@@ -63,7 +63,13 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Actions"
 
-          for FILENAME in "./README.md" "./kubernetes.json"
+          FILENAMES=(
+            "./.github/workflows/build.yml"
+            "./kubernetes.json"
+            "./kubernetes.sh"
+            "./README.md"
+          )
+          for FILENAME in "${FILENAMES[@]}"
           do
             echo "Replacing: ${REPO}"
             sed \

@@ -3,3 +3,6 @@
 
 # cosign key
 cosign.key
+
+# Temporary|generated files
+tmp/**
