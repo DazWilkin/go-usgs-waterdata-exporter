@@ -175,7 +175,7 @@ func (c *InstantaneousValuesCollector) getValue(t waterdata.TimeSeries) (float64
 		msg := "no Value[0] values returned"
 		logger.Info(msg,
 			"name", t.Name,
-			"values", t.Values[0].Value,
+			"values", len(t.Values[0].Value),
 		)
 		return 0.0, errors.New(msg)
 	}
