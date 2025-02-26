@@ -39,7 +39,7 @@ Metrics are prefixed `usgs_waterdata_`
 
 > **NOTE** The USGS uses the spelling "Gage" instead of "Gauge"
 
-## Run
+## Run `exporter`
 
 ### Go binary
 
@@ -81,6 +81,22 @@ docker.io/prom/prometheus:${VERS} \
 --config.file=/etc/prometheus/prometheus.yml \
 --web.enable-lifecycle
 ```
+
+## Kubernetes
+
+```bash
+./kubernetes.sh
+```
+
+`pull`'s the latest image, `tag`'s it for Kubernetes local registry (`localhost:32000`), `push`'es it and then deploys using [Jsonnet](https://jsonnet.org/) (actually [`go-jsonnet`](https://github.com/google/go-jsonnet)) script ([`kubernetes.jsonnet`](./kubernetes.jsonnet)) to a cluster:
+
++ `Namespace`
++ `ServiceAccount`
++ `Deployment`
++ `Service`
++ `Ingress` (Tailscale)
++ `ServiceMonitor` (Prometheus Operator)
++ `VerticalPodAutoscaler`
 
 ## Sigstore
 
