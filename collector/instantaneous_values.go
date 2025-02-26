@@ -71,6 +71,7 @@ func (c *InstantaneousValuesCollector) Collect(ch chan<- prometheus.Metric) {
 			"name", t.Name,
 		)
 
+		// Retrieve the Sitecode from the Timeseries
 		sitecode, err := c.getSitecode(t)
 		if err != nil {
 			logger.Info("Unable to get sitecode",
@@ -91,6 +92,7 @@ func (c *InstantaneousValuesCollector) Collect(ch chan<- prometheus.Metric) {
 			continue
 		}
 
+		// Retrieve the value from the Timeseries
 		value, err := c.getValue(t)
 		if err != nil {
 			logger.Info("Unable to get value",
@@ -99,14 +101,12 @@ func (c *InstantaneousValuesCollector) Collect(ch chan<- prometheus.Metric) {
 			)
 			continue
 		}
+
 		logger.Info("Measured",
 			"name", t.Name,
 			"sitecode", sitecode,
 			"value", value,
 		)
-
-		// Only GageHeightFeet measurements are left
-		// TODO Check to corrorboate sites parameter with values returned
 
 		ch <- prometheus.MustNewConstMetric(
 			c.GageHeightFeet,
@@ -135,7 +135,9 @@ func (c *InstantaneousValuesCollector) Describe(ch chan<- *prometheus.Desc) {
 func (c *InstantaneousValuesCollector) getSitecode(t waterdata.TimeSeries) (string, error) {
 	logger := c.Logger.With("method", "getSitecode")
 
-	if len(t.SourceInfo.SiteCode) == 0 {
+	l := len(t.SourceInfo.SiteCode)
+
+	if l == 0 {
 		msg := "no site code returned"
 		logger.Info(msg,
 			"name", t.Name,
@@ -143,10 +145,12 @@ func (c *InstantaneousValuesCollector) getSitecode(t waterdata.TimeSeries) (stri
 		return "", errors.New(msg)
 	}
 
-	logger.Info("Sitecodes returned",
-		"name", t.Name,
-		"sitecodes", len(t.SourceInfo.SiteCode),
-	)
+	if l > 1 {
+		logger.Info("Sitecodes returned",
+			"name", t.Name,
+			"sitecodes", l,
+		)
+	}
 
 	sitecode := t.SourceInfo.SiteCode[0].Value
 
@@ -158,44 +162,56 @@ func (c *InstantaneousValuesCollector) getSitecode(t waterdata.TimeSeries) (stri
 func (c *InstantaneousValuesCollector) getValue(t waterdata.TimeSeries) (float64, error) {
 	logger := c.Logger.With("method", "getValue")
 
-	if len(t.Values) == 0 {
-		msg := "no values returned"
-		logger.Info(msg,
-			"name", t.Name,
-		)
-		return 0.0, errors.New(msg)
+	// Check the length of the Values array
+	{
+		l := len(t.Values)
+
+		if l == 0 {
+			msg := "no values returned"
+			logger.Info(msg,
+				"name", t.Name,
+			)
+			return 0.0, errors.New(msg)
+		}
+
+		if l > 1 {
+			logger.Info("Values returned",
+				"name", t.Name,
+				"values", l,
+			)
+		}
 	}
 
-	logger.Info("Values returned",
-		"name", t.Name,
-		"values", len(t.Values),
-	)
+	// Check the length of the Values[0].Value (!) array
+	{
+		l := len(t.Values[0].Value)
+		if l == 0 {
+			msg := "no Value[0] values returned"
+			logger.Info(msg,
+				"name", t.Name,
+			)
+			return 0.0, errors.New(msg)
+		}
 
-	if len(t.Values[0].Value) == 0 {
-		msg := "no Value[0] values returned"
-		logger.Info(msg,
-			"name", t.Name,
-			"values", len(t.Values[0].Value),
-		)
-		return 0.0, errors.New(msg)
+		if l > 1 {
+			logger.Info("Values[0] values (!) returned",
+				"name", t.Name,
+				"values", l,
+			)
+		}
 	}
 
-	logger.Info("Values[0] values (!) returned",
-		"name", t.Name,
-		"values", len(t.Values[0].Value),
-	)
-
-	v := t.Values[0].Value[0].Value
-	value, err := strconv.ParseFloat(v, 64)
+	sValue := t.Values[0].Value[0].Value
+	fValue, err := strconv.ParseFloat(sValue, 64)
 	if err != nil {
-		msg := fmt.Sprintf("unable to parse value (%s) as float64", v)
+		msg := fmt.Sprintf("unable to parse value (%s) as float64", sValue)
 		logger.Info(msg,
-			"value", v,
+			"value", sValue,
 		)
 		return 0.0, errors.New(msg)
 	}
 
-	return value, nil
+	return fValue, nil
 
 }
 
