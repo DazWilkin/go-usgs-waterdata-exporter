@@ -4,6 +4,8 @@
 
 Uses the [Instantaneous Values (iv) service](https://waterservices.usgs.gov/docs/instantaneous-values/). There are several other [services](https://waterservices.usgs.gov/) in the portfolio.
 
+> **NOTE** The service does not require API keys or other credentials for use.
+
 ## Table of Contents
 
 + [References](#references)
