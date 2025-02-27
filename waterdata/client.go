@@ -57,7 +57,7 @@ func (c *Client) GetInstantaneousValues(sites []string) (*GetInstantaneousValues
 	params.Add("format", "json")
 	params.Add("sites", strings.Join(sites, ","))
 	params.Add("modifiedSince", "PT1H")
-	params.Add("siteStatus", "all")
+	params.Add("siteStatus", "active")
 
 	queryString := params.Encode()
 
