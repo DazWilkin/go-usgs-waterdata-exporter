@@ -35,7 +35,7 @@ RUN CGO_ENABLED=0 GOOS=${TARGETOS} GOARCH=${TARGETARCH} \
 
 FROM --platform=${TARGETARCH} gcr.io/distroless/static-debian12:latest
 
-LABEL org.opencontainers.image.source=https://github.com/DazWilkin/go-usgs-waterdata-exporter
+LABEL org.opencontainers.image.source="https://github.com/DazWilkin/go-usgs-waterdata-exporter"
 
 COPY --from=build /bin/server /
 
