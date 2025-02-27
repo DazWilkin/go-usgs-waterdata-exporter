@@ -37,7 +37,7 @@ Metrics are prefixed `usgs_waterdata_`
 |`exporter_start_time`|Gauge|Exporter start time in Unix epoch seconds|
 |`iv_gage_height_feet`|Gauge|Gage Height Feet|
 
-> **NOTE** The USGS uses the spelling "Gage" instead of "Gauge"
+> **NOTE** USGS uses the [spelling "Gage" instead of "Gauge"](https://www.usgs.gov/faqs/why-does-usgs-use-spelling-gage-instead-gauge)
 
 ## Run `exporter`
 
