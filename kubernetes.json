@@ -63,9 +63,9 @@
                                 "args": [
                                     "--endpoint=0.0.0.0:8080",
                                     "--path=/metrics",
-                                    "--site=12149000",
-                                    "--site=12150400",
-                                    "--site=12150800"
+                                    "--sitecode=12149000",
+                                    "--sitecode=12150400",
+                                    "--sitecode=12150800"
                                 ],
                                 "ports": [
                                     {

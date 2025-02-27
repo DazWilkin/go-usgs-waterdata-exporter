@@ -18,13 +18,13 @@ type InstantaneousValuesCollector struct {
 	Client *waterdata.Client
 	Logger *slog.Logger
 
-	Sites []string
+	Sitecodes []string
 
 	GageHeightFeet *prometheus.Desc
 }
 
 // NewInstantaneousValuesCollector is a function that creates a new GageCollector
-func NewInstantaneousValuesCollector(s System, c *waterdata.Client, sites []string, l *slog.Logger) *InstantaneousValuesCollector {
+func NewInstantaneousValuesCollector(s System, c *waterdata.Client, sitecodes []string, l *slog.Logger) *InstantaneousValuesCollector {
 	subsystem := "iv"
 	logger := l.With("collector", subsystem)
 	return &InstantaneousValuesCollector{
@@ -32,7 +32,7 @@ func NewInstantaneousValuesCollector(s System, c *waterdata.Client, sites []stri
 		Client: c,
 		Logger: logger,
 
-		Sites: sites,
+		Sitecodes: sitecodes,
 
 		GageHeightFeet: prometheus.NewDesc(
 			prometheus.BuildFQName(s.Namespace, subsystem, "gage_height_feet"),
@@ -48,20 +48,23 @@ func NewInstantaneousValuesCollector(s System, c *waterdata.Client, sites []stri
 // Collect is a method that implements Prometheus' Collector interface and collects metrics
 func (c *InstantaneousValuesCollector) Collect(ch chan<- prometheus.Metric) {
 	logger := c.Logger.With("method", "collect")
-	resp, err := c.Client.GetInstantaneousValues(c.Sites)
+	resp, err := c.Client.GetInstantaneousValues(c.Sitecodes)
 	if err != nil {
 		logger.Info("Unable to get waterdata gage")
 		return
 	}
 
-	rqstMap := make(map[string]bool)
+	// Useful to be able to identify sitecodes that:
+	// + requested but not responded (returned) by the service
+	// + responded but not requested by the service
+	// Use maps to track sites requested|responded
+	rqstSitecodes := make(map[string]bool)
+	respSitecodes := make(map[string]bool)
 
 	// Mark all requested sites as existing
-	for _, site := range c.Sites {
-		rqstMap[site] = true
+	for _, site := range c.Sitecodes {
+		rqstSitecodes[site] = true
 	}
-
-	respMap := make(map[string]bool)
 
 	// []TimeSeries contains more than just Gage Height measurements
 	// Must filter results to ensure the VariableCode[].Value only contains GageHeightFeet ("00065")
@@ -81,8 +84,8 @@ func (c *InstantaneousValuesCollector) Collect(ch chan<- prometheus.Metric) {
 			continue
 		}
 
-		// Compare requested c.Sites and returned resp.Value.TimeSeries.SourceInfo.Sitecode
-		respMap[sitecode] = true
+		// Track this sitecode as having been returned
+		respSitecodes[sitecode] = true
 
 		// Filter TimeSeries to only those where VariableCode[].Value contains GageHeightFeet
 		if !t.Variable.Contains(waterdata.GageHeightFeet) {
@@ -118,7 +121,7 @@ func (c *InstantaneousValuesCollector) Collect(ch chan<- prometheus.Metric) {
 		)
 	}
 
-	if notResp, notRqst := c.findMismatches(rqstMap, respMap); len(notResp) != 0 || len(notRqst) != 0 {
+	if notResp, notRqst := c.findMismatches(rqstSitecodes, respSitecodes); len(notResp) != 0 || len(notRqst) != 0 {
 		logger.Info("Sites not matched",
 			"requested but not responded", notResp,
 			"responded but not requested", notRqst,

@@ -50,9 +50,9 @@ MODULE="github.com/DazWilkin/go-usgs-waterdata-exporter" # Or "."
 
 # Sites: Snoqualmie River at Carnation, Duvall, Monroe
 go run ${MODULE}/cmd/server \
---site=12149000 \
---site=12150400 \
---site=12150800
+--sitecode=12149000 \
+--sitecode=12150400 \
+--sitecode=12150800
 ```
 
 ### Container
@@ -64,9 +64,9 @@ podman run \
 --interactive --tty --rm \
 --publish=${PORT}:${PORT} \
 ${IMAGE} \
---site=12149000 \
---site=12150400 \
---site=12150800
+--sitecode=12149000 \
+--sitecode=12150400 \
+--sitecode=12150800
 ```
 
 ## Prometheus

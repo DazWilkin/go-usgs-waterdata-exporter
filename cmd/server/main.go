@@ -39,9 +39,9 @@ var (
 func main() {
 	logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
 
-	var sites []string
-	flag.Func("site", "The sites to be queried", func(s string) error {
-		sites = append(sites, s)
+	var sitecodes []string
+	flag.Func("sitecode", "The sitecodes to be queried", func(s string) error {
+		sitecodes = append(sitecodes, s)
 		return nil
 	})
 
@@ -51,8 +51,8 @@ func main() {
 		logger.Error("expected flag `--endpoint`")
 		os.Exit(1)
 	}
-	if len(sites) == 0 {
-		logger.Error("expected at least one flag `--site`")
+	if len(sitecodes) == 0 {
+		logger.Error("expected at least one flag `--sitecode`")
 		os.Exit(1)
 	}
 
@@ -80,7 +80,7 @@ func main() {
 		StartTime: StartTime,
 	}
 	registry.MustRegister(collector.NewExporterCollector(s, b, logger))
-	registry.MustRegister(collector.NewInstantaneousValuesCollector(s, client, sites, logger))
+	registry.MustRegister(collector.NewInstantaneousValuesCollector(s, client, sitecodes, logger))
 
 	mux := http.NewServeMux()
 	mux.Handle("/", http.HandlerFunc(handleRoot))

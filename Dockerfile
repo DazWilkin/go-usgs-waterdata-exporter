@@ -40,4 +40,4 @@ LABEL org.opencontainers.image.source="https://github.com/DazWilkin/go-usgs-wate
 COPY --from=build /bin/server /
 
 ENTRYPOINT ["/server"]
-CMD ["--entrypoint=0.0.0.0:8080","--path=/metrics","--site=12150400"]
+CMD ["--entrypoint=0.0.0.0:8080","--path=/metrics","--sitecode=12150400"]

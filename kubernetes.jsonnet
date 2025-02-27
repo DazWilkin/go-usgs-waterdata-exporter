@@ -13,9 +13,9 @@ local labels = {
 local port = 8080;
 
 local sites = [
-    "--site=12149000", # Carnation
-    "--site=12150400", # Duvall
-    "--site=12150800"  # Monroe
+    "--sitecode=12149000", # Carnation
+    "--sitecode=12150400", # Duvall
+    "--sitecode=12150800"  # Monroe
     ];
 
 {
