@@ -84,11 +84,12 @@ docker.io/prom/prometheus:${VERS} \
 
 ## Kubernetes
 
-```bash
-./kubernetes.sh
-```
+See [`kubernetes.sh`](./kubernetes.sh)
 
-`pull`'s the latest image, `tag`'s it for Kubernetes local registry (`localhost:32000`), `push`'es it and then deploys using [Jsonnet](https://jsonnet.org/) (actually [`go-jsonnet`](https://github.com/google/go-jsonnet)) script ([`kubernetes.jsonnet`](./kubernetes.jsonnet)) to a cluster:
+1. `pull`'s the latest image from GHCR
+1. `tag`'s it for Kubernetes local registry (`localhost:32000`)
+1. `push`'es it to the local registry
+1. Deploys the following using [Jsonnet](https://jsonnet.org/) (actually [`go-jsonnet`](https://github.com/google/go-jsonnet)) script ([`kubernetes.jsonnet`](./kubernetes.jsonnet)) to a cluster:
 
 + `Namespace`
 + `ServiceAccount`
@@ -119,3 +120,20 @@ go tool golangci-lint run ./...
 ## JSON
 
 See [`instantaneous_values.json`](./examples/instantaneous_values.json)
+
+## Other Exporters
+
++ [Prometheus Exporter for Azure](https://github.com/DazWilkin/azure-exporter)
++ [Prometheus Exporter for crt.sh](https://github.com/DazWilkin/crtsh-exporter)
++ [Prometheus Exporter for Fly.io](https://github.com/DazWilkin/fly-exporter)
++ [Prometheus Exporter for GoatCounter](https://github.com/DazWilkin/goatcounter-exporter)
++ [Prometheus Exporter for Google Cloud](https://github.com/DazWilkin/gcp-exporter)
++ [Prometheus Exporter for Koyeb](https://github.com/DazWilkin/koyeb-exporter)
++ [Prometheus Exporter for Linode](https://github.com/DazWilkin/linode-exporter)
++ [Prometheus Exporter for PorkBun](https://github.com/DazWilkin/porkbun-exporter)
++ [Prometheus Exporter for updown.io](https://github.com/DazWilkin/updown-exporter)
++ [Prometheus Exporter for Vultr](https://github.com/DazWilkin/vultr-exporter)
+
+<hr/>
+<br/>
+<a href="https://www.buymeacoffee.com/dazwilkin" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174"></a>
