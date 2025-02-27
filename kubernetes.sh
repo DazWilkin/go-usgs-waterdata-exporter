@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Updated by GitHub Workflow actions
-OLD_IMAGE="ghcr.io/dazwilkin/go-usgs-waterdata-exporter:3b94744d1baa91bdc34b7bb71086d6219994262d"
+OLD_IMAGE="ghcr.io/dazwilkin/go-usgs-waterdata-exporter:73d0ee2bcd2bfa76db956d980898455af30b47d5"
 
 # Replace "ghcr.io/dazwilkin" with "localhost:32000"
 NEW_IMAGE="localhost:32000/${OLD_IMAGE#ghcr.io/dazwilkin/}"
