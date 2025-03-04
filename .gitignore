@@ -6,3 +6,6 @@ cosign.key
 
 # Temporary|generated files
 tmp/**
+
+# Environment
+.env.test
