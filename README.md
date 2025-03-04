@@ -27,7 +27,7 @@ Uses the [Instantaneous Values (iv) service](https://waterservices.usgs.gov/docs
 
 ## Image
 
-`ghcr.io/dazwilkin/go-usgs-waterdata-exporter:419a57705cc7eb435b668c2b49582f1b1e20d3cb`
+`ghcr.io/dazwilkin/go-usgs-waterdata-exporter:f75de057642bb0c15300df52caf88ea32901e2eb`
 
 ## Metrics
 
@@ -58,7 +58,7 @@ go run ${MODULE}/cmd/server \
 ### Container
 
 ```bash
-IMAGE="ghcr.io/dazwilkin/go-usgs-waterdata-exporter:419a57705cc7eb435b668c2b49582f1b1e20d3cb"
+IMAGE="ghcr.io/dazwilkin/go-usgs-waterdata-exporter:f75de057642bb0c15300df52caf88ea32901e2eb"
 
 podman run \
 --interactive --tty --rm \
@@ -108,7 +108,7 @@ See [`kubernetes.sh`](./kubernetes.sh)
 ```bash
 cosign verify \
 --key=${PWD}/cosign.pub \
-ghcr.io/dazwilkin/go-usgs-waterdata-exporter:419a57705cc7eb435b668c2b49582f1b1e20d3cb
+ghcr.io/dazwilkin/go-usgs-waterdata-exporter:f75de057642bb0c15300df52caf88ea32901e2eb
 ```
 
 ## [profile-guided Optimization](https://cloud.google.com/blog/products/application-development/using-profile-guided-optimization-for-your-go-apps)
