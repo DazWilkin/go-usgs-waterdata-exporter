@@ -17,7 +17,6 @@ RUN go mod download
 
 COPY cmd/server cmd/server
 COPY collector collector
-COPY waterdata waterdata
 
 ARG TARGETOS
 ARG TARGETARCH
