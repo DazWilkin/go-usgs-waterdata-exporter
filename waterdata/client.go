@@ -12,7 +12,7 @@ import (
 
 const (
 	// iv = Instantaneous Values service
-	endpoint string = "https://waterservices.usgs.gov/nwis/iv/"
+	rawURL string = "https://waterservices.usgs.gov/nwis/iv/"
 )
 const (
 	// Refactor this
@@ -26,18 +26,31 @@ const (
 
 // Client is a type that represents a Waterdata Service client
 type Client struct {
-	Client *http.Client
-	Logger *slog.Logger
+	// Allow the URL to be overridden for testing
+	BaseURL *url.URL
+	Client  *http.Client
+	Logger  *slog.Logger
 }
 
 // NewClient is a function that returns a new Client
-func NewClient(l *slog.Logger) *Client {
+func NewClient(l *slog.Logger) (*Client, error) {
 	logger := l.With("client", "waterdata")
 
-	return &Client{
-		Client: &http.Client{},
-		Logger: logger,
+	baseURL, err := url.Parse(rawURL)
+	if err != nil {
+		msg := "unable to parse URL"
+		logger.Error(msg,
+			"endpoint", rawURL,
+			"err", err,
+		)
+		return &Client{}, errors.New(msg)
 	}
+
+	return &Client{
+		BaseURL: baseURL,
+		Client:  &http.Client{},
+		Logger:  logger,
+	}, nil
 }
 
 // GetInstantaneousValues is a method that returns values using the InstantaneousValues Service
@@ -61,17 +74,8 @@ func (c *Client) GetInstantaneousValues(sites []string) (*GetInstantaneousValues
 
 	queryString := params.Encode()
 
-	parsedURL, err := url.Parse(endpoint)
-	if err != nil {
-		msg := "unable to parse URL"
-		logger.Error(msg,
-			"err", err,
-		)
-		return &GetInstantaneousValuesResponse{}, errors.New(msg)
-	}
-
-	parsedURL.RawQuery = queryString
-	fullURL := parsedURL.String()
+	c.BaseURL.RawQuery = queryString
+	fullURL := c.BaseURL.String()
 
 	rqst, err := http.NewRequest(http.MethodGet, fullURL, nil)
 	if err != nil {

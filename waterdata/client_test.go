@@ -11,7 +11,10 @@ import (
 func TestInstantaneousValues(t *testing.T) {
 	logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
 
-	client := NewClient(logger)
+	client, err := NewClient(logger)
+	if err != nil {
+		t.Errorf("expected to be able to create client")
+	}
 
 	sites := []string{
 		SnoqualmieCarnation,
