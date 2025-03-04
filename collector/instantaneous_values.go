@@ -6,7 +6,9 @@ import (
 	"log/slog"
 	"strconv"
 
-	"github.com/DazWilkin/go-usgs-waterdata-exporter/waterdata"
+	"github.com/DazWilkin/go-probe/probe"
+
+	"github.com/DazWilkin/go-usgs-waterdata/waterdata"
 
 	"github.com/prometheus/client_golang/prometheus"
 )
@@ -14,9 +16,10 @@ import (
 // InstantaneousValuesCollector represents the result of USGS Instantaneous Values service
 // Currently this only extracts one measurement GageHeightFeet ("00065")
 type InstantaneousValuesCollector struct {
-	System System
-	Client *waterdata.Client
-	Logger *slog.Logger
+	system System
+	client *waterdata.Client
+	ch     chan<- probe.Status
+	logger *slog.Logger
 
 	Sitecodes []string
 
@@ -24,13 +27,14 @@ type InstantaneousValuesCollector struct {
 }
 
 // NewInstantaneousValuesCollector is a function that creates a new GageCollector
-func NewInstantaneousValuesCollector(s System, c *waterdata.Client, sitecodes []string, l *slog.Logger) *InstantaneousValuesCollector {
+func NewInstantaneousValuesCollector(s System, c *waterdata.Client, ch chan<- probe.Status, sitecodes []string, l *slog.Logger) *InstantaneousValuesCollector {
 	subsystem := "iv"
 	logger := l.With("collector", subsystem)
 	return &InstantaneousValuesCollector{
-		System: s,
-		Client: c,
-		Logger: logger,
+		system: s,
+		client: c,
+		ch:     ch,
+		logger: logger,
 
 		Sitecodes: sitecodes,
 
@@ -47,12 +51,33 @@ func NewInstantaneousValuesCollector(s System, c *waterdata.Client, sitecodes []
 
 // Collect is a method that implements Prometheus' Collector interface and collects metrics
 func (c *InstantaneousValuesCollector) Collect(ch chan<- prometheus.Metric) {
-	logger := c.Logger.With("method", "collect")
-	resp, err := c.Client.GetInstantaneousValues(c.Sitecodes)
+	logger := c.logger.With("method", "collect")
+	resp, err := c.client.GetInstantaneousValues(c.Sitecodes)
 	if err != nil {
-		logger.Info("Unable to get waterdata gage")
+		msg := "Unable to get waterdata gage"
+		logger.Info(msg,
+			"err", err.Error(),
+		)
+
+		// Send probe unhealthy status
+		// Doesn't surface the API error message (should it!?)
+		status := probe.Status{
+			Healthy: false,
+			Message: msg,
+		}
+		c.ch <- status
+
 		return
 	}
+
+	logger.Info("Received response")
+
+	// Send probe healthy status
+	status := probe.Status{
+		Healthy: true,
+		Message: "ok",
+	}
+	c.ch <- status
 
 	// Useful to be able to identify sitecodes that:
 	// + requested but not responded (returned) by the service
@@ -136,7 +161,7 @@ func (c *InstantaneousValuesCollector) Describe(ch chan<- *prometheus.Desc) {
 
 // getSitecode is a method that returns the sitecode from the TimeSeries
 func (c *InstantaneousValuesCollector) getSitecode(t waterdata.TimeSeries) (string, error) {
-	logger := c.Logger.With("method", "getSitecode")
+	logger := c.logger.With("method", "getSitecode")
 
 	l := len(t.SourceInfo.SiteCode)
 
@@ -163,7 +188,7 @@ func (c *InstantaneousValuesCollector) getSitecode(t waterdata.TimeSeries) (stri
 // getValue is a method that returns the value from the TimeSeries
 // It only returns the first value in the Values array
 func (c *InstantaneousValuesCollector) getValue(t waterdata.TimeSeries) (float64, error) {
-	logger := c.Logger.With("method", "getValue")
+	logger := c.logger.With("method", "getValue")
 
 	// Check the length of the Values array
 	{

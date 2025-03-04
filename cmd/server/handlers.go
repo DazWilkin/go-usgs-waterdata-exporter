@@ -36,13 +36,7 @@ type Content struct {
 	MetricsPath string
 }
 
-func handleHealthz(w http.ResponseWriter, _ *http.Request) {
-	w.WriteHeader(http.StatusOK)
-	if _, err := w.Write([]byte("ok")); err != nil {
-		log.Fatal("unable to write response")
-	}
-}
-func handleRoot(w http.ResponseWriter, _ *http.Request) {
+func root(w http.ResponseWriter, _ *http.Request) {
 	w.Header().Set("Content-Type", "text/html; charset=UTF-8")
 	t := template.Must(template.New("content").Parse(rootTemplate))
 	if err := t.ExecuteTemplate(w, "content", Content{MetricsPath: *metricsPath}); err != nil {
