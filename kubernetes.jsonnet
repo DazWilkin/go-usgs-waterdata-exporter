@@ -79,6 +79,13 @@ local sites = [
                                         "containerPort": port
                                     }
                                 ],
+                                "livenessProbe": {
+                                    "httpGet": {
+                                        "path": "/healthz",
+                                        "port": "metrics"
+                                    },
+                                    "initialDelaySeconds": 10
+                                },
                                 "resources": {
                                     "limits": {
                                         "memory": "500Mi"
