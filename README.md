@@ -121,6 +121,24 @@ mux.HandleFunc("/debug/pprof/symbol", pprof.Symbol)
 mux.HandleFunc("/debug/pprof/trace", pprof.Trace)
 ```
 
+Then collect and copy:
+
+```bash
+ENDPOINT="..." # http://localhost:8080
+
+NOW=$(date +%y%m%d%H%M)
+
+curl \
+--data-urlencode "seconds=30" \
+--output ${PWD}/tmp/cpu.${NOW}.pprof \
+${ENDPOINT}/debug/pprof/profile  && \
+cp \
+  ${PWD}/tmp/cpu.${NOW}.pprof \
+  ${PWD}/default.pgo
+```
+
+Ensure `default.pgo` is added to [`Dockerfile`](./Dockerfile)
+
 ## `go tools`
 
 See [`go.mod`](./go.mod) `tool` section.

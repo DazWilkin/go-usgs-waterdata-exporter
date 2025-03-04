@@ -24,8 +24,12 @@ ARG TARGETARCH
 ARG VERSION
 ARG COMMIT
 
+# Used by default with go build for profile-guided optimization
+COPY default.pgo default.pgo
+
 RUN CGO_ENABLED=0 GOOS=${TARGETOS} GOARCH=${TARGETARCH} \
     go build \
+    -pgo ./default.pgo \
     -ldflags "-X main.OSVersion=${VERSION} -X main.GitCommit=${COMMIT}" \
     -a -installsuffix cgo \
     -o /bin/server \
