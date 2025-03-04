@@ -27,7 +27,7 @@ Uses the [Instantaneous Values (iv) service](https://waterservices.usgs.gov/docs
 
 ## Image
 
-`ghcr.io/dazwilkin/go-usgs-waterdata-exporter:21d6857dc35b16326670113947536d7ae2a9783a`
+`ghcr.io/dazwilkin/go-usgs-waterdata-exporter:419a57705cc7eb435b668c2b49582f1b1e20d3cb`
 
 ## Metrics
 
@@ -58,7 +58,7 @@ go run ${MODULE}/cmd/server \
 ### Container
 
 ```bash
-IMAGE="ghcr.io/dazwilkin/go-usgs-waterdata-exporter:21d6857dc35b16326670113947536d7ae2a9783a"
+IMAGE="ghcr.io/dazwilkin/go-usgs-waterdata-exporter:419a57705cc7eb435b668c2b49582f1b1e20d3cb"
 
 podman run \
 --interactive --tty --rm \
@@ -108,7 +108,7 @@ See [`kubernetes.sh`](./kubernetes.sh)
 ```bash
 cosign verify \
 --key=${PWD}/cosign.pub \
-ghcr.io/dazwilkin/go-usgs-waterdata-exporter:21d6857dc35b16326670113947536d7ae2a9783a
+ghcr.io/dazwilkin/go-usgs-waterdata-exporter:419a57705cc7eb435b668c2b49582f1b1e20d3cb
 ```
 
 ## `go tools`
