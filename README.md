@@ -111,6 +111,16 @@ cosign verify \
 ghcr.io/dazwilkin/go-usgs-waterdata-exporter:21d6857dc35b16326670113947536d7ae2a9783a
 ```
 
+## [profile-guided Optimization](https://cloud.google.com/blog/products/application-development/using-profile-guided-optimization-for-your-go-apps)
+
+```golang
+mux.HandleFunc("/debug/pprof/", pprof.Index)
+mux.HandleFunc("/debug/pprof/cmdline", pprof.Cmdline)
+mux.HandleFunc("/debug/pprof/profile", pprof.Profile)
+mux.HandleFunc("/debug/pprof/symbol", pprof.Symbol)
+mux.HandleFunc("/debug/pprof/trace", pprof.Trace)
+```
+
 ## `go tools`
 
 See [`go.mod`](./go.mod) `tool` section.
