@@ -139,6 +139,24 @@ cp \
 
 Ensure `default.pgo` is added to [`Dockerfile`](./Dockerfile)
 
+Downloaded files are gzipped:
+
+```bash
+cat ${PWD}/tmp/cpu.${NOW}.pprof \
+| gunzip \
+| protoc --decode_raw
+```
+
+Or better using [`profile.proto`](https://github.com/google/pprof/blob/main/proto/profile.proto):
+
+```bash
+cat ${PWD}/tmp/cpu.${NOW}$.pprof \
+| gunzip \
+| protoc \
+  --decode=perftools.profiles.Profile \
+  profile.proto
+```
+
 ## `go tools`
 
 See [`go.mod`](./go.mod) `tool` section.
