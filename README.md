@@ -1,6 +1,8 @@
 # Prometheus Exporter for [USGS Water Data service](https://waterservices.usgs.gov/docs/instantaneous-values/instantaneous-values-details)
 
 [![build](https://github.com/DazWilkin/go-usgs-waterdata-exporter/actions/workflows/build.yml/badge.svg)](https://github.com/DazWilkin/go-usgs-waterdata-exporter/actions/workflows/build.yml)
+[![Go Reference](https://pkg.go.dev/badge/github.com/DazWilkin/go-usgs-waterdata-exporter.svg)](https://pkg.go.dev/github.com/DazWilkin/go-usgs-waterdata-exporter)
+[![Go Report Card](https://goreportcard.com/badge/github.com/DazWilkin/go-usgs-waterdata-exporter)](https://goreportcard.com/report/github.com/DazWilkin/go-usgs-waterdata-exporter)
 
 Uses the [Instantaneous Values (iv) service](https://waterservices.usgs.gov/docs/instantaneous-values/). There are several other [services](https://waterservices.usgs.gov/) in the portfolio.
 
