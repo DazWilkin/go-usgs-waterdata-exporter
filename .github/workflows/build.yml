@@ -65,6 +65,7 @@ jobs:
 
           FILENAMES=(
             "./.github/workflows/build.yml"
+            "./cloudrun.sh"
             "./kubernetes.json"
             "./kubernetes.sh"
             "./README.md"
