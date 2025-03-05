@@ -12,12 +12,12 @@ const (
 <!DOCTYPE html>
 <html lang="en-US">
 <head>
-<title>Prometheus Exporter for USGS Waterdata</title>
-<style>
-body {
-  font-family: Verdana;
-}
-</style>
+	<meta name="description" content="Prometheus Exporter for USGS Waterdata service">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Prometheus Exporter for USGS Waterdata</title>
+	<style>
+	body { font-family: Verdana; }
+	</style>
 </head>
 <body>
 	<h2>Prometheus Exporter for USGS Waterdata</h2>
