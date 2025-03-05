@@ -14,7 +14,7 @@ podman tag \
 
 podman push "${NEW_IMAGE}"
 
-CONFIG="${PWD}/tmp/kubernetes.$(date +%y%m%d).yaml"
+CONFIG="${PWD}/tmp/kubernetes.$(date +%y%m%d).json"
 
 # Generate and persist the config for auditability
 jsonnet \
