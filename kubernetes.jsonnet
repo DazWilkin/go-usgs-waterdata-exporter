@@ -12,11 +12,11 @@ local labels = {
 
 local port = 8080;
 
-local sites = [
+local sitecodes = [
     "--sitecode=12149000", # Carnation
     "--sitecode=12150400", # Duvall
     "--sitecode=12150800"  # Monroe
-    ];
+];
 
 {
     "apiVersion": "v1",
@@ -71,7 +71,7 @@ local sites = [
                                 "args": [
                                     "--endpoint=0.0.0.0:" + port,
                                     "--path=/metrics"
-                                ] + sites,
+                                ] + sitecodes,
                                 "ports": [
                                     {
                                         "name": "metrics",
