@@ -157,6 +157,59 @@ cat ${PWD}/tmp/cpu.${NOW}$.pprof \
   profile.proto
 ```
 
+### Cloud Run
+
+Requires changes to `Dockerfile` to remove `--platform={value}`
+
+Add to `main.go`:
+
+```golang
+cfg := profiler.Config{
+  Service:        subsystem,
+  ServiceVersion: version,
+}
+if err := profiler.Start(cfg); err != nil {
+  logger.Error("unable to start Google Cloud Profiler",
+    "err", err,
+  )
+}
+```
+Deploy (see [`cloudrun.sh`](./cloudrun.sh)):
+```bash
+NAME="waterdata-exporter"
+REGION="..."
+
+gcloud run deploy ${NAME} \
+--source=${PWD} \
+--no-allow-unauthenticated \
+--max-instances=1 \
+--region=${REGION} \
+--args="--endpoint=:8080","--path=/metrics","--sitecode=12149000","--sitecode=12150400","--sitecode=12150800" \
+--project=${PROJECT}
+
+ENDPOINT=$(\
+  gcloud run services describe ${NAME} \
+  --region=${REGION} \
+  --project=${PROJECT} \
+  --format="value(status.url)")
+```
+
+```bash
+TOKEN=$(gcloud auth print-identity-token)
+
+curl \
+--silent \
+--get \
+--header "Authorization: Bearer ${TOKEN}" \
+${ENDPOINT}/metrics \
+| awk '/^usgs_waterdata_iv_/'
+```
+```console
+usgs_waterdata_iv_gage_height_feet{site="12149000"} 46.42
+usgs_waterdata_iv_gage_height_feet{site="12150400"} 23.81
+usgs_waterdata_iv_gage_height_feet{site="12150800"} 3.62
+```
+
 ## `go tools`
 
 See [`go.mod`](./go.mod) `tool` section.
