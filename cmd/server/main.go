@@ -5,7 +5,6 @@ import (
 	"flag"
 	"log/slog"
 	"net/http"
-	"net/http/pprof"
 	"os"
 	"runtime"
 	"time"
@@ -97,6 +96,7 @@ func main() {
 		GitCommit: GitCommit,
 		StartTime: StartTime,
 	}
+
 	registry := prometheus.NewRegistry()
 	registry.MustRegister(collector.NewExporterCollector(s, b, logger))
 	registry.MustRegister(collector.NewInstantaneousValuesCollector(s, client, ch, sitecodes, logger))
@@ -105,13 +105,6 @@ func main() {
 	mux.Handle("/", http.HandlerFunc(root))
 	mux.Handle("/healthz", http.HandlerFunc(healthz))
 	mux.Handle(*metricsPath, promhttp.HandlerFor(registry, promhttp.HandlerOpts{}))
-
-	// Add pprof handlers
-	mux.HandleFunc("/debug/pprof/", pprof.Index)
-	mux.HandleFunc("/debug/pprof/cmdline", pprof.Cmdline)
-	mux.HandleFunc("/debug/pprof/profile", pprof.Profile)
-	mux.HandleFunc("/debug/pprof/symbol", pprof.Symbol)
-	mux.HandleFunc("/debug/pprof/trace", pprof.Trace)
 
 	logger.Info("Starting",
 		"endpoint", *endpoint,
