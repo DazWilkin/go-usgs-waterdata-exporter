@@ -1,14 +1,20 @@
+# GitHub
+.github/**
+
+# Git
+.git/**
+ 
 # VS Code
 .vscode/**
-
-# cosign key
-cosign.key
 
 # Temporary|generated files
 tmp/**
 
 # Environment
 .env.test
+
+# cosign key
+cosign.key
 
 # Protobuf sources
 **/*.proto
