@@ -1,6 +1,8 @@
 # Prometheus Exporter for [USGS Water Data service](https://waterservices.usgs.gov/docs/instantaneous-values/instantaneous-values-details)
 
 [![build](https://github.com/DazWilkin/go-usgs-waterdata-exporter/actions/workflows/build.yml/badge.svg)](https://github.com/DazWilkin/go-usgs-waterdata-exporter/actions/workflows/build.yml)
+[![Go Reference](https://pkg.go.dev/badge/github.com/DazWilkin/go-usgs-waterdata-exporter.svg)](https://pkg.go.dev/github.com/DazWilkin/go-usgs-waterdata-exporter)
+[![Go Report Card](https://goreportcard.com/badge/github.com/DazWilkin/go-usgs-waterdata-exporter)](https://goreportcard.com/report/github.com/DazWilkin/go-usgs-waterdata-exporter)
 
 Uses the [Instantaneous Values (iv) service](https://waterservices.usgs.gov/docs/instantaneous-values/). There are several other [services](https://waterservices.usgs.gov/) in the portfolio.
 
@@ -27,7 +29,7 @@ Uses the [Instantaneous Values (iv) service](https://waterservices.usgs.gov/docs
 
 ## Image
 
-`ghcr.io/dazwilkin/go-usgs-waterdata-exporter:f75de057642bb0c15300df52caf88ea32901e2eb`
+`ghcr.io/dazwilkin/go-usgs-waterdata-exporter:dd9a5eb3d8afee24405c757cee33edb338914b0f`
 
 ## Metrics
 
@@ -58,7 +60,7 @@ go run ${MODULE}/cmd/server \
 ### Container
 
 ```bash
-IMAGE="ghcr.io/dazwilkin/go-usgs-waterdata-exporter:f75de057642bb0c15300df52caf88ea32901e2eb"
+IMAGE="ghcr.io/dazwilkin/go-usgs-waterdata-exporter:dd9a5eb3d8afee24405c757cee33edb338914b0f"
 
 podman run \
 --interactive --tty --rm \
@@ -108,7 +110,7 @@ See [`kubernetes.sh`](./kubernetes.sh)
 ```bash
 cosign verify \
 --key=${PWD}/cosign.pub \
-ghcr.io/dazwilkin/go-usgs-waterdata-exporter:f75de057642bb0c15300df52caf88ea32901e2eb
+ghcr.io/dazwilkin/go-usgs-waterdata-exporter:dd9a5eb3d8afee24405c757cee33edb338914b0f
 ```
 
 ## [profile-guided Optimization](https://cloud.google.com/blog/products/application-development/using-profile-guided-optimization-for-your-go-apps)
