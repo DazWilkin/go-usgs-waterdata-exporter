@@ -7,6 +7,10 @@ import (
 )
 
 const (
+	robotsTemplate string = `
+User-agent: *
+Disallow: /
+`
 	rootTemplate string = `
 {{- define "content" }}
 <!DOCTYPE html>
@@ -34,6 +38,12 @@ const (
 
 type Content struct {
 	MetricsPath string
+}
+
+func robots(w http.ResponseWriter, _ *http.Request) {
+	w.Header().Set("Content-Type", "text/plain; charset=UTF-8")
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte(robotsTemplate))
 }
 
 func root(w http.ResponseWriter, _ *http.Request) {

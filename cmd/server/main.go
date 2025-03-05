@@ -104,6 +104,8 @@ func main() {
 	mux := http.NewServeMux()
 	mux.Handle("/", http.HandlerFunc(root))
 	mux.Handle("/healthz", http.HandlerFunc(healthz))
+	mux.Handle("/robots.txt", http.HandlerFunc(robots))
+
 	mux.Handle(*metricsPath, promhttp.HandlerFor(registry, promhttp.HandlerOpts{}))
 
 	logger.Info("Starting",
