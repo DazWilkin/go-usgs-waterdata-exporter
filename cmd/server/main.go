@@ -102,9 +102,9 @@ func main() {
 	registry.MustRegister(collector.NewInstantaneousValuesCollector(s, client, ch, sitecodes, logger))
 
 	mux := http.NewServeMux()
-	mux.Handle("/", http.HandlerFunc(root))
-	mux.Handle("/healthz", http.HandlerFunc(healthz))
-	mux.Handle("/robots.txt", http.HandlerFunc(robots))
+	mux.Handle("/", root(logger))
+	mux.Handle("/healthz", healthz)
+	mux.Handle("/robots.txt", robots(logger))
 
 	mux.Handle(*metricsPath, promhttp.HandlerFor(registry, promhttp.HandlerOpts{}))
 

@@ -81,7 +81,9 @@ func TestInstantaneousValuesCollector(t *testing.T) {
 	defer server.Close()
 
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprint(w, waterdataResponse)
+		if _, err := fmt.Fprint(w, waterdataResponse); err != nil {
+			t.Errorf("unable to write response")
+		}
 	})
 
 	s := System{}

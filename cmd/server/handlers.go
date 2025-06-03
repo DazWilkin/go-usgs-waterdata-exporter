@@ -1,7 +1,7 @@
 package main
 
 import (
-	"log"
+	"log/slog"
 	"net/http"
 	"text/template"
 )
@@ -40,16 +40,22 @@ type Content struct {
 	MetricsPath string
 }
 
-func robots(w http.ResponseWriter, _ *http.Request) {
-	w.Header().Set("Content-Type", "text/plain; charset=UTF-8")
-	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(robotsTemplate))
+func robots(logger *slog.Logger) http.HandlerFunc {
+	return func(w http.ResponseWriter, _ *http.Request) {
+		w.Header().Set("Content-Type", "text/plain; charset=UTF-8")
+		w.WriteHeader(http.StatusOK)
+		if _, err := w.Write([]byte(robotsTemplate)); err != nil {
+			logger.Error("unable to write response", "err", err)
+		}
+	}
 }
 
-func root(w http.ResponseWriter, _ *http.Request) {
-	w.Header().Set("Content-Type", "text/html; charset=UTF-8")
-	t := template.Must(template.New("content").Parse(rootTemplate))
-	if err := t.ExecuteTemplate(w, "content", Content{MetricsPath: *metricsPath}); err != nil {
-		log.Fatal("unable to execute template")
+func root(logger *slog.Logger) http.HandlerFunc {
+	return func(w http.ResponseWriter, _ *http.Request) {
+		w.Header().Set("Content-Type", "text/html; charset=UTF-8")
+		t := template.Must(template.New("content").Parse(rootTemplate))
+		if err := t.ExecuteTemplate(w, "content", Content{MetricsPath: *metricsPath}); err != nil {
+			logger.Error("unable to execute template", "err", err)
+		}
 	}
 }
