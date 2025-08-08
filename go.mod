@@ -5,7 +5,7 @@ go 1.24.3
 require (
 	github.com/DazWilkin/go-probe v0.0.0-20250403165833-d2e6a85b4486
 	github.com/DazWilkin/go-usgs-waterdata v0.0.0-20250304223332-9b86fc4118b7
-	github.com/prometheus/client_golang v1.22.0
+	github.com/prometheus/client_golang v1.23.0
 )
 
 require (
@@ -126,7 +126,7 @@ require (
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/polyfloyd/go-errorlint v1.7.1 // indirect
 	github.com/prometheus/client_model v0.6.2 // indirect
-	github.com/prometheus/common v0.64.0 // indirect
+	github.com/prometheus/common v0.65.0 // indirect
 	github.com/prometheus/procfs v0.16.1 // indirect
 	github.com/quasilyte/go-ruleguard v0.4.3-0.20240823090925-0fe6f58b47b1 // indirect
 	github.com/quasilyte/go-ruleguard/dsl v0.3.22 // indirect
