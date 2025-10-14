@@ -24,7 +24,7 @@ then
   exit 1
 fi
 
-OLD_IMAGE="ghcr.io/dazwilkin/go-usgs-waterdata-exporter:ef6d89634b11900b2082d53406eab8f2530e7979"
+OLD_IMAGE="ghcr.io/dazwilkin/go-usgs-waterdata-exporter:d481e974cae784bc548dad8db12f02a78a2c64e0"
 NEW_IMAGE="${REGION}-docker.pkg.dev/${PROJECT}/${REPOSITORY}/${OLD_IMAGE#ghcr.io/dazwilkin/}"
 
 podman pull ${OLD_IMAGE}
